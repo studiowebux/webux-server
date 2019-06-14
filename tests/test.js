@@ -31,7 +31,7 @@ const options = {
 const express = require("express");
 const app = express();
 const { CreateApp, Webux } = require("webux-app");
-const webuxserver = require("./index");
+const webuxserver = require("../index");
 
 CreateApp(options);
 // CreateApp();
