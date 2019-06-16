@@ -45,4 +45,4 @@ app.get("/", (req, res) => {
   return res.status(200).json({ msg: "Bonjour !" });
 });
 
-webuxserver(options, app); // start the server
+webuxserver(app, options); // start the server

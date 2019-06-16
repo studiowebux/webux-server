@@ -66,7 +66,7 @@ const onListening = () => {
   Webux.log.info("Listening on " + bind);
 };
 
-const CreateServer = (options, app) => {
+const CreateServer = (app, options) => {
   if (options.ssl.enabled) {
     const sslOptions = {
       key: fs.readFileSync(options.ssl.key),
