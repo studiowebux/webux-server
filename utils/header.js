@@ -14,9 +14,7 @@
 
 "use strict";
 
-const { Webux } = require("webux-app");
-
-module.exports = (app, options) => {
+module.exports = (Webux, options) => {
   Webux.log.info("Application started with success.");
   Webux.log.info("Version : " + options.version);
   Webux.log.info("Author: " + options.author + " | " + options.enterprise);
@@ -24,10 +22,10 @@ module.exports = (app, options) => {
     "Project : " +
       options.project +
       " is listening on port " +
-      app.get("port") +
+      Webux.app.get("port") +
       "..."
   );
   Webux.log.info("RESTFUL API accessible from : " + options.version);
-  Webux.log.info("Mode : " + app.get("env"));
+  Webux.log.info("Mode : " + Webux.app.get("env"));
   Webux.log.info("Working Path : " + process.cwd());
 };

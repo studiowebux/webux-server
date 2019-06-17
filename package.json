@@ -6,10 +6,8 @@
   "author": "Studio Webux S.E.N.C",
   "license": "SEE LICENSE IN license.txt",
   "dependencies": {
-    "express": "^4.17.1",
     "fs": "0.0.1-security",
     "http": "0.0.0",
-    "https": "^1.0.0",
-    "webux-logger": "^1.2.2"
+    "https": "^1.0.0"
   }
 }

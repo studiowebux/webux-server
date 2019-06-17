@@ -1,8 +1,4 @@
-const { Webux } = require("webux-app");
-
-Webux.log.info("This is a test from test 2.1...");
-
-module.exports = () => {
+module.exports = (Webux) => {
   console.log("NAH");
   Webux.log.info("This is a test from test 2...");
 };

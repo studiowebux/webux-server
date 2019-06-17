@@ -28,8 +28,6 @@ const options = {
   }
 };
 
-const express = require("express");
-const app = express();
 const { CreateApp, Webux } = require("webux-app");
 const webuxserver = require("../index");
 
@@ -38,11 +36,11 @@ CreateApp(options);
 
 Webux.log.info("This is a test with a global variable !");
 
-require("./test2")();
+require("./test2")(Webux);
 
-app.get("/", (req, res) => {
+Webux.app.get("/", (req, res) => {
   Webux.log.info("Hello World !");
-  return res.status(200).json({ msg: "Bonjour !" });
+  return res.success({ msg: "Bonjour !" });
 });
 
-webuxserver(app, options); // start the server
+webuxserver(Webux, options); // start the server
