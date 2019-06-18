@@ -27,5 +27,5 @@ module.exports = (app, log, options) => {
   );
   log.info("RESTFUL API accessible from : " + options.version);
   log.info("Mode : " + app.get("env"));
-  Webux.log.info("Working Path : " + process.cwd());
+  log.info("Working Path : " + process.cwd());
 };
