@@ -14,18 +14,18 @@
 
 "use strict";
 
-module.exports = (Webux, options) => {
-  Webux.log.info("Application started with success.");
-  Webux.log.info("Version : " + options.version);
-  Webux.log.info("Author: " + options.author + " | " + options.enterprise);
-  Webux.log.info(
+module.exports = (app, log, options) => {
+  log.info("Application started with success.");
+  log.info("Version : " + options.version);
+  log.info("Author: " + options.author + " | " + options.enterprise);
+  log.info(
     "Project : " +
       options.project +
       " is listening on port " +
-      Webux.app.get("port") +
+      app.get("port") +
       "..."
   );
-  Webux.log.info("RESTFUL API accessible from : " + options.version);
-  Webux.log.info("Mode : " + Webux.app.get("env"));
+  log.info("RESTFUL API accessible from : " + options.version);
+  log.info("Mode : " + app.get("env"));
   Webux.log.info("Working Path : " + process.cwd());
 };

@@ -65,19 +65,19 @@ const onListening = () => {
   console.log("Listening on " + bind);
 };
 
-const CreateServer = (Webux, options) => {
+const CreateServer = (app, log, options) => {
   if (options.ssl.enabled) {
     const sslOptions = {
       key: fs.readFileSync(options.ssl.key),
       cert: fs.readFileSync(options.ssl.crt)
     };
-    server = require("https").createServer(sslOptions, Webux.app);
+    server = require("https").createServer(sslOptions, app);
   } else {
-    server = require("http").createServer(Webux.app);
+    server = require("http").createServer(app);
   }
 
   port = normalizePort(process.env.PORT || options.port);
-  Webux.app.set("port", port);
+  app.set("port", port);
 
   server.on("error", onError);
   server.on("listening", onListening);
@@ -93,7 +93,7 @@ const CreateServer = (Webux, options) => {
   });
 
   server.listen(port, () => {
-    header(Webux, options);
+    header(app, log, options);
   });
 };
 
