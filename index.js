@@ -19,7 +19,7 @@
 const fs = require("fs");
 const header = require("./utils/header");
 
-let server;
+let server = null;
 let port;
 
 /**
@@ -62,39 +62,63 @@ const onError = error => {
 const onListening = () => {
   const addr = server.address();
   const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  console.log("Listening on " + bind);
+  console.info("Listening on " + bind);
 };
 
-const CreateServer = (app, log, options) => {
-  if (options.ssl.enabled) {
-    const sslOptions = {
-      key: fs.readFileSync(options.ssl.key),
-      cert: fs.readFileSync(options.ssl.crt)
-    };
-    server = require("https").createServer(sslOptions, app);
-  } else {
-    server = require("http").createServer(app);
+/**
+ * Start an HTTP/HTTPS server.
+ * @param {Object} options The configuration to start the server, mandatory
+ * @param {Object} app An express application, mandatory
+ * @param {Function} log The log function, optional, by default console
+ * @return {VoidFunction} Start the server.
+ */
+const CreateServer = (options, app, log = console) => {
+  if (!options || typeof options !== "object") {
+    throw new Error("The options parameter is required and must be an object");
+  }
+  if (!app || typeof app !== "function") {
+    throw new Error("The app parameter is required and must be a function");
+  }
+  if (log && typeof log !== "object") {
+    throw new Error("The log parameter must be an object");
   }
 
-  port = normalizePort(process.env.PORT || options.port);
-  app.set("port", port);
+  try {
+    if (options.ssl.enabled) {
+      log.info("Starting an HTTPS server ...");
+      const sslOptions = {
+        key: fs.readFileSync(options.ssl.key),
+        cert: fs.readFileSync(options.ssl.crt)
+      };
+      server = require("https").createServer(sslOptions, app);
+    } else {
+      log.info("Starting an HTTP server ...");
+      server = require("http").createServer(app);
+    }
 
-  server.on("error", onError);
-  server.on("listening", onListening);
+    port = normalizePort(process.env.PORT || options.port);
+    app.set("port", port);
 
-  // Graceful shutdown
-  process.on("SIGTERM", () => {
-    server.close(err => {
-      if (err) {
-        throw err;
-      }
-      process.exit(0);
+    server.on("error", onError);
+    server.on("listening", onListening);
+
+    // Graceful shutdown
+    process.on("SIGTERM", () => {
+      server.close(err => {
+        if (err) {
+          throw err;
+        }
+        process.exit(0);
+      });
     });
-  });
 
-  server.listen(port, () => {
-    header(app, log, options);
-  });
+    // Start the server and print the Header
+    server.listen(port, () => {
+      header(options, app, log);
+    });
+  } catch (e) {
+    throw e;
+  }
 };
 
-module.exports = CreateServer;
+module.exports = { CreateServer, server };

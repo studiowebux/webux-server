@@ -5,9 +5,17 @@
   "main": "index.js",
   "author": "Studio Webux S.E.N.C",
   "license": "SEE LICENSE IN license.txt",
+  "homepage": "https://github.com/studiowebux/webux-server",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/studiowebux/webux-server.git"
+  },
   "dependencies": {
     "fs": "0.0.1-security",
     "http": "0.0.0",
     "https": "^1.0.0"
+  },
+  "devDependencies": {
+    "express": "^4.17.1"
   }
 }
