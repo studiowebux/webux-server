@@ -7,22 +7,22 @@ const options = {
   enterprise: "Studio Webux S.E.N.C",
   author: "Tommy Gingras",
   project: "Webux-bin",
-  version: require('./package.json')['version'],
+  version: require("./package.json")["version"],
   endpoint: "/api/v1",
   port: 1337
 };
 
-const webuxserver = require("../index");
+const { CreateServer } = require("../index");
 const express = require("express");
 const app = express();
 
-app.set('env', "development");
-app.set('port', 1337);
+app.set("env", "development");
+app.set("port", 1337);
 
 app.get("/", (req, res) => {
-  return res.success({
+  return res.send({
     msg: "Bonjour !"
   });
 });
 
-webuxserver(options, app); // start the server
+CreateServer(options, app); // start the server
