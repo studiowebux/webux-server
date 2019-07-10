@@ -70,7 +70,7 @@ const onListening = () => {
  * @param {Object} options The configuration to start the server, mandatory
  * @param {Object} app An express application, mandatory
  * @param {Function} log The log function, optional, by default console
- * @return {VoidFunction} Start the server.
+ * @return {Function} Start the server and return it.
  */
 const CreateServer = (options, app, log = console) => {
   if (!options || typeof options !== "object") {
