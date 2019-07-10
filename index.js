@@ -116,9 +116,11 @@ const CreateServer = (options, app, log = console) => {
     server.listen(port, () => {
       header(options, app, log);
     });
+
+    return server;
   } catch (e) {
     throw e;
   }
 };
 
-module.exports = { CreateServer, server };
+module.exports = { CreateServer };
