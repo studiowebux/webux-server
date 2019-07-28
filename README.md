@@ -3,6 +3,8 @@
 This module allows to start a NodeJS server using http or https,  
 you have to specify an app, a custom logger (if you have one) and some options.
 
+you can use either HTTP or HTTPS, but not both simulteanously, if you want to redirect all the HTTP traffic to HTTPS, you should use a proxy.
+
 # Installation
 
 ```bash
@@ -17,8 +19,8 @@ This example is using the console from nodeJS with an HTTP server.
 const options = {
   ssl: {
     enabled: false,
-    key: "", // absolute path
-    crt: "" // absolute path
+    key: process.env.KET || "", // base64 format
+    crt: process.env.CERT || "" // base64 format
   },
   enterprise: "Studio Webux S.E.N.C",
   author: "Tommy Gingras",
@@ -56,6 +58,22 @@ RESTFUL API accessible from : /api/v1
 Mode : development
 Working Path : /Users/tgingras/Documents/Studiowebux/webux-server/examples
 ```
+
+### Generate a self-signed certificate
+
+```bash
+openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out  cert.crt -keyout key.key
+cat key.key | base64
+cat cert.crt | base64
+```
+
+Copy both outputs of the base64 command:  
+```bash
+export KEY=...
+export CERT=...
+```
+
+Check the ```examples/testSSL.js``` file for an example.  
 
 ## Contributing
 

@@ -16,7 +16,6 @@
 
 "use strict";
 
-const fs = require("fs");
 const header = require("./utils/header");
 
 let server = null;
@@ -86,10 +85,13 @@ const CreateServer = (options, app, log = console) => {
   try {
     if (options.ssl.enabled) {
       log.info("Starting an HTTPS server ...");
+      let key = Buffer.from(options.ssl.key, "base64").toString("ascii");
+      let crt = Buffer.from(options.ssl.crt, "base64").toString("ascii");
       const sslOptions = {
-        key: fs.readFileSync(options.ssl.key),
-        cert: fs.readFileSync(options.ssl.crt)
+        key: key,
+        cert: crt
       };
+
       server = require("https").createServer(sslOptions, app);
     } else {
       log.info("Starting an HTTP server ...");

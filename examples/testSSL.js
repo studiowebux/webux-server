@@ -1,8 +1,10 @@
+require("dotenv").config();
+
 const options = {
   ssl: {
-    enabled: false,
-    key: "",
-    crt: ""
+    enabled: true,
+    crt: process.env.CERT,
+    key: process.env.KEY
   },
   enterprise: "Studio Webux S.E.N.C",
   author: "Tommy Gingras",
