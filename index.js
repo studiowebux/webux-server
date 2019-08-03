@@ -74,74 +74,80 @@ const onListening = () => {
  * @return {Function} Start the server and return it.
  */
 const CreateServer = (options, app, log = console) => {
-  if (!options || typeof options !== "object") {
-    throw new Error("The options parameter is required and must be an object");
-  }
-  if (!app || typeof app !== "function") {
-    throw new Error("The app parameter is required and must be a function");
-  }
-  if (log && typeof log !== "object") {
-    throw new Error("The log parameter must be an object");
-  }
-
-  try {
-    if (cluster.isMaster) {
-      log.verbose(`Master ${process.pid} is running`);
-
-      // Fork workers.
-      for (let i = 0; i < numCPUs; i++) {
-        cluster.fork();
+  return new Promise((resolve, reject) => {
+    try {
+      if (!options || typeof options !== "object") {
+        return reject(
+          new Error("The options parameter is required and must be an object")
+        );
+      }
+      if (!app || typeof app !== "function") {
+        return reject(
+          new Error("The app parameter is required and must be a function")
+        );
+      }
+      if (log && typeof log !== "object") {
+        return reject(new Error("The log parameter must be an object"));
       }
 
-      cluster.on("exit", (worker, code, signal) => {
-        log.verbose(`worker ${worker.process.pid} died`);
-      });
-    } else {
-      // Workers can share any TCP connection
-      // In this case it is an HTTP server
-      if (options.ssl.enabled) {
-        log.info("Starting an HTTPS server ...");
-        let key = Buffer.from(options.ssl.key, "base64").toString("ascii");
-        let crt = Buffer.from(options.ssl.crt, "base64").toString("ascii");
-        const sslOptions = {
-          key: key,
-          cert: crt
-        };
+      if (options.clusterize && cluster.isMaster) {
+        log.info(`Master ${process.pid} is running`);
 
-        server = require("https").createServer(sslOptions, app);
-      } else {
-        log.info("Starting an HTTP server ...");
-        server = require("http").createServer(app);
-      }
+        // Fork workers.
+        for (let i = 0; i < numCPUs; i++) {
+          cluster.fork();
+        }
 
-      port = normalizePort(process.env.PORT || options.port);
-      app.set("port", port);
-
-      server.on("error", onError);
-      server.on("listening", onListening);
-
-      // Graceful shutdown
-      process.on("SIGTERM", () => {
-        server.close(err => {
-          if (err) {
-            throw err;
-          }
-          process.exit(0);
+        cluster.on("exit", (worker, code, signal) => {
+          log.info(`worker ${worker.process.pid} died`);
         });
-      });
+      } else {
+        // Workers can share any TCP connection
+        // In this case it is an HTTP server
+        if (options.ssl.enabled) {
+          log.info("Starting an HTTPS server ...");
+          let key = Buffer.from(options.ssl.key, "base64").toString("ascii");
+          let crt = Buffer.from(options.ssl.crt, "base64").toString("ascii");
+          const sslOptions = {
+            key: key,
+            cert: crt
+          };
 
-      // Start the server and print the Header
-      server.listen(port, () => {
-        header(options, app, log);
-      });
+          server = require("https").createServer(sslOptions, app);
+        } else {
+          log.info("Starting an HTTP server ...");
+          server = require("http").createServer(app);
+        }
 
-      log.verbose(`Worker ${process.pid} started`);
+        port = normalizePort(process.env.PORT || options.port);
+        app.set("port", port);
 
-      return server;
+        server.on("error", onError);
+        server.on("listening", onListening);
+
+        // Graceful shutdown
+        process.on("SIGTERM", () => {
+          server.close(err => {
+            if (err) {
+              return reject(err);
+            }
+            process.exit(0);
+          });
+        });
+
+        // Start the server and print the Header
+        server.listen(port, () => {
+          header(options, app, log);
+        });
+
+        log.info(`Worker ${process.pid} started`);
+
+        return resolve(server);
+      }
+    } catch (e) {
+      throw e;
     }
-  } catch (e) {
-    throw e;
-  }
+  });
 };
 
 module.exports = { CreateServer };

@@ -10,7 +10,7 @@ const options = {
   version: require("./package.json")["version"],
   endpoint: "/api/v1",
   port: 1337,
-  clusterize: true
+  clusterize: false
 };
 
 const { CreateServer } = require("../index");
