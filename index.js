@@ -140,7 +140,9 @@ const CreateServer = (options, app, log = console) => {
           header(options, app, log);
         });
 
-        log.info(`Worker ${process.pid} started`);
+        if (options.clusterize) {
+          log.info(`Worker ${process.pid} started`);
+        }
 
         return resolve(server);
       }
