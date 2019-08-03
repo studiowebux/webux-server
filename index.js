@@ -17,6 +17,8 @@
 "use strict";
 
 const header = require("./utils/header");
+const cluster = require("cluster");
+const numCPUs = require("os").cpus().length;
 
 let server = null;
 let port;
@@ -83,43 +85,60 @@ const CreateServer = (options, app, log = console) => {
   }
 
   try {
-    if (options.ssl.enabled) {
-      log.info("Starting an HTTPS server ...");
-      let key = Buffer.from(options.ssl.key, "base64").toString("ascii");
-      let crt = Buffer.from(options.ssl.crt, "base64").toString("ascii");
-      const sslOptions = {
-        key: key,
-        cert: crt
-      };
+    if (cluster.isMaster) {
+      log.verbose(`Master ${process.pid} is running`);
 
-      server = require("https").createServer(sslOptions, app);
-    } else {
-      log.info("Starting an HTTP server ...");
-      server = require("http").createServer(app);
-    }
+      // Fork workers.
+      for (let i = 0; i < numCPUs; i++) {
+        cluster.fork();
+      }
 
-    port = normalizePort(process.env.PORT || options.port);
-    app.set("port", port);
-
-    server.on("error", onError);
-    server.on("listening", onListening);
-
-    // Graceful shutdown
-    process.on("SIGTERM", () => {
-      server.close(err => {
-        if (err) {
-          throw err;
-        }
-        process.exit(0);
+      cluster.on("exit", (worker, code, signal) => {
+        log.verbose(`worker ${worker.process.pid} died`);
       });
-    });
+    } else {
+      // Workers can share any TCP connection
+      // In this case it is an HTTP server
+      if (options.ssl.enabled) {
+        log.info("Starting an HTTPS server ...");
+        let key = Buffer.from(options.ssl.key, "base64").toString("ascii");
+        let crt = Buffer.from(options.ssl.crt, "base64").toString("ascii");
+        const sslOptions = {
+          key: key,
+          cert: crt
+        };
 
-    // Start the server and print the Header
-    server.listen(port, () => {
-      header(options, app, log);
-    });
+        server = require("https").createServer(sslOptions, app);
+      } else {
+        log.info("Starting an HTTP server ...");
+        server = require("http").createServer(app);
+      }
 
-    return server;
+      port = normalizePort(process.env.PORT || options.port);
+      app.set("port", port);
+
+      server.on("error", onError);
+      server.on("listening", onListening);
+
+      // Graceful shutdown
+      process.on("SIGTERM", () => {
+        server.close(err => {
+          if (err) {
+            throw err;
+          }
+          process.exit(0);
+        });
+      });
+
+      // Start the server and print the Header
+      server.listen(port, () => {
+        header(options, app, log);
+      });
+
+      log.verbose(`Worker ${process.pid} started`);
+
+      return server;
+    }
   } catch (e) {
     throw e;
   }
