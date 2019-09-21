@@ -32,17 +32,19 @@ module.exports = (options, app, log = console) => {
     throw new Error("The log parameter must be an object")
   }
 
-  log.info("Application started with success.");
-  log.info("Version : " + options.version);
-  log.info("Author: " + options.author + " | " + options.enterprise);
+  log.info("/****************************************************************/")
+  log.info("/* Application started with success.");
+  log.info("/* Version : " + options.version);
+  log.info("/* Author: " + options.author + " | " + options.enterprise);
   log.info(
-    "Project : " +
+    "/* Project : " +
     options.project +
     " is listening on port " +
     app.get("port") +
     "..."
   );
-  log.info("RESTFUL API accessible from : " + options.endpoint);
-  log.info("Mode : " + app.get("env"));
-  log.info("Working Path : " + process.cwd());
+  log.info("/* RESTFUL API accessible from : " + options.endpoint);
+  log.info("/* Mode : " + app.get("env"));
+  log.info("/* Working Path : " + process.cwd());
+  log.info("/****************************************************************/")
 };
