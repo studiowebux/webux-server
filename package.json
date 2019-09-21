@@ -1,6 +1,6 @@
 {
   "name": "webux-server",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "description": "The entry point for our framework, http or https and port configuration",
   "main": "index.js",
   "author": "Studio Webux S.E.N.C",
