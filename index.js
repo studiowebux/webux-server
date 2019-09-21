@@ -63,7 +63,7 @@ const onError = error => {
 const onListening = () => {
   const addr = server.address();
   const bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-  console.info("Listening on " + bind);
+  console.info("webux-server - Listening on " + bind);
 };
 
 /**
@@ -76,22 +76,8 @@ const onListening = () => {
 const CreateServer = (options, app, log = console) => {
   return new Promise((resolve, reject) => {
     try {
-      if (!options || typeof options !== "object") {
-        return reject(
-          new Error("The options parameter is required and must be an object")
-        );
-      }
-      if (!app || typeof app !== "function") {
-        return reject(
-          new Error("The app parameter is required and must be a function")
-        );
-      }
-      if (log && typeof log !== "object") {
-        return reject(new Error("The log parameter must be an object"));
-      }
-
       if (options.clusterize && cluster.isMaster) {
-        log.info(`Master ${process.pid} is running`);
+        log.info(`webux-server - Master ${process.pid} is running`);
 
         // Fork workers.
         for (let i = 0; i < numCPUs; i++) {
@@ -99,13 +85,13 @@ const CreateServer = (options, app, log = console) => {
         }
 
         cluster.on("exit", (worker, code, signal) => {
-          log.info(`worker ${worker.process.pid} died`);
+          log.info(`webux-server - worker ${worker.process.pid} died`);
         });
       } else {
         // Workers can share any TCP connection
         // In this case it is an HTTP server
         if (options.ssl.enabled) {
-          log.info("Starting an HTTPS server ...");
+          log.info("webux-server - Starting an HTTPS server ...");
           let key = Buffer.from(options.ssl.key, "base64").toString("ascii");
           let crt = Buffer.from(options.ssl.crt, "base64").toString("ascii");
           const sslOptions = {
@@ -115,7 +101,7 @@ const CreateServer = (options, app, log = console) => {
 
           server = require("https").createServer(sslOptions, app);
         } else {
-          log.info("Starting an HTTP server ...");
+          log.info("webux-server - Starting an HTTP server ...");
           server = require("http").createServer(app);
         }
 
@@ -138,13 +124,13 @@ const CreateServer = (options, app, log = console) => {
         // Start the server and print the Header
         server.listen(port, () => {
           header(options, app, log);
+
+          if (options.clusterize) {
+            log.info(`webux-server - Worker ${process.pid} started`);
+          }
+
+          return resolve(server);
         });
-
-        if (options.clusterize) {
-          log.info(`Worker ${process.pid} started`);
-        }
-
-        return resolve(server);
       }
     } catch (e) {
       throw e;
