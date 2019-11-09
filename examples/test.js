@@ -6,7 +6,7 @@ const options = {
   },
   enterprise: "Studio Webux S.E.N.C",
   author: "Tommy Gingras",
-  project: "Webux-bin",
+  project: "@studiowebux/bin",
   version: require("./package.json")["version"],
   endpoint: "/api/v1",
   port: 1337

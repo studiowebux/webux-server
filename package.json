@@ -1,5 +1,5 @@
 {
-  "name": "webux-server",
+  "name": "@studiowebux/server",
   "version": "1.5.4",
   "description": "The entry point for our framework, http or https and port configuration",
   "main": "index.js",

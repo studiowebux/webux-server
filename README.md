@@ -1,4 +1,4 @@
-# Webux-server
+# @studiowebux/server
 
 This module allows to start a NodeJS server using http or https,  
 you have to specify an app, a custom logger (if you have one) and some options.
@@ -8,7 +8,7 @@ you can use either HTTP or HTTPS, but not both simulteanously, if you want to re
 # Installation
 
 ```bash
-npm i --save webux-server
+npm i --save @studiowebux/server
 ```
 
 # Usage
@@ -24,7 +24,7 @@ const options = {
   },
   enterprise: "Studio Webux S.E.N.C",
   author: "Tommy Gingras",
-  project: "Webux-bin",
+  project: "@studiowebux/bin",
   version: require('./package.json')['version'],
   endpoint: "/api/v1",
   port: 1337
@@ -53,7 +53,7 @@ Listening on port 1337
 Application started with success.
 Version : 1.0.0
 Author: Tommy Gingras | Studio Webux S.E.N.C
-Project : Webux-bin is listening on port 1337...
+Project : @studiowebux/bin is listening on port 1337...
 RESTFUL API accessible from : /api/v1
 Mode : development
 Working Path : /Users/tgingras/Documents/Studiowebux/webux-server/examples
