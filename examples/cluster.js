@@ -2,28 +2,73 @@ const options = {
   ssl: {
     enabled: false,
     key: "",
-    crt: ""
+    cert: "",
   },
   enterprise: "Studio Webux S.E.N.C",
   author: "Tommy Gingras",
   project: "@studiowebux/bin",
-  version: require("./package.json")["version"],
+  version: require("../package.json")["version"],
   endpoint: "/api/v1",
-  port: 1337,
-  clusterize: false
+  port: process.env.PORT || 1337,
+  cores: 4, // If removed, it will automatically use all available cores.
 };
 
-const { CreateServer } = require("../index");
+const WebuxServer = require("../src/index");
 const express = require("express");
 const app = express();
+const webuxServer = new WebuxServer(options, app, console);
 
-app.set("env", "development");
-app.set("port", 1337);
+app.set("node_env", process.env.NODE_ENV || "development");
+app.set("port", process.env.PORT || 1337);
 
-app.get("/", (req, res) => {
+app.get("/kill", (req, res) => {
+  // Kill the current worker
+  console.log("Kill the worker !");
+  webuxServer.cluster.worker.kill();
+
   return res.send({
-    msg: "Bonjour !"
+    msg: "Killed",
+    env: app.get("node_env"),
+    port: app.get("port"),
+    pid: process.pid,
   });
 });
 
-CreateServer(options, app); // start the server
+app.get("/stop", (req, res) => {
+  // stop the server
+  console.log("Stop the server !");
+  // It takes some time before closing the connection,
+  // Here is why : https://nodejs.org/api/net.html#net_server_close_callback
+  webuxServer.server.close();
+
+  webuxServer.server.getConnections((err, count) => {
+    if (err) {
+      throw err;
+    }
+    return res.send({
+      msg: "Killed",
+      env: app.get("node_env"),
+      port: app.get("port"),
+      pid: process.pid,
+      connections: count,
+    });
+  });
+});
+
+app.get("/", (req, res) => {
+  return res.send({
+    msg: "Bonjour !",
+    env: app.get("node_env"),
+    port: app.get("port"),
+    pid: process.pid,
+  });
+});
+
+webuxServer.StartCluster().then((instance) => {
+  if (instance && !instance.isMaster) {
+    //console.log(instance);
+    // instance.close((err) => {
+    //   console.error(err);
+    // });
+  }
+});
