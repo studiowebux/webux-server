@@ -1,8 +1,8 @@
 {
   "name": "@studiowebux/server",
-  "version": "1.5.4",
+  "version": "2.0.0",
   "description": "The entry point for our framework, http or https and port configuration",
-  "main": "index.js",
+  "main": "src/index.js",
   "author": "Studio Webux S.E.N.C",
   "license": "SEE LICENSE IN license.txt",
   "homepage": "https://github.com/studiowebux/webux-server",
@@ -10,11 +10,15 @@
     "type": "git",
     "url": "https://github.com/studiowebux/webux-server.git"
   },
-  "dependencies": {
-    "http": "0.0.0",
-    "https": "^1.0.0"
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "directories": {
+    "example": "examples"
+  },
+  "dependencies": {},
   "devDependencies": {
-    "express": "^4.17.1"
+    "express": "^4.17.1",
+    "dotenv": "^8.0.0"
   }
 }
