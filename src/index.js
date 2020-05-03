@@ -23,6 +23,13 @@ const {
  * @class Server
  */
 class Server {
+  /**
+   * 
+   * @param {*} opts The options to configure the server
+   * @param {*} app The expressJS app or the handler function
+   * @param {*} log Custom logger function (Default: console)
+   * @constructor
+   */
   constructor(opts, app, log = console) {
     this.log = log;
     this.config = opts;
