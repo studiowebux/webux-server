@@ -58,7 +58,7 @@ const options = {
 
 ### constructor(opts, app, log = console)
 
-it initializes the serveur based on the configuration.
+It initializes the server based on the configuration.
 
 ```javascript
 const WebuxServer = require("@studiowebux/server");
@@ -99,8 +99,8 @@ Example:
 // Start the cluster
 webuxServer.StartCluster().then((instance) => {
   if (instance && !instance.isMaster) {
-    // To stop the HTTP/HTTPS server;
-    // right after the creation
+    // For example, to stop the HTTP/HTTPS server;
+    // right after the creation (this is useless ..)
     instance.close();
   }
 });
@@ -161,9 +161,10 @@ webuxServer.StartServer();
 
 #### Step 1 - The certificates
 
-> This is highly recommended to use real certificate, this example should only be used in test and development.
-
 To generate a self-signed certificate:
+
+> This is highly recommended to use real certificate,  
+>  this example should only be used in test and development.
 
 ```bash
 openssl req -new -newkey rsa:4096 -x509 -sha256 -days 365 -nodes -out  cert.crt -keyout key.key
@@ -190,7 +191,7 @@ config/server.js
 ```javascript
 module.exports = {
   ssl: {
-    enabled: true,
+    enabled: process.env.KEY && process.env.CERT ? true : false,
     key: process.env.KEY,
     cert: process.env.CERT,
   },
@@ -245,7 +246,7 @@ function handler(req, res) {
 }
 ```
 
-Oficial documentation: [NodeJS HTTP](https://nodejs.org/en/knowledge/HTTP/servers/how-to-create-a-HTTP-server/)
+Official documentation: [NodeJS HTTP](https://nodejs.org/en/knowledge/HTTP/servers/how-to-create-a-HTTP-server/)
 
 #### Step 2 - The configuration
 
@@ -282,9 +283,17 @@ webuxServer.StartServer();
 
 [NodeJS events](https://nodejs.org/api/http.html#http_class_http_server)
 
+By default, these events are implemented
+
+- error
+- close
+- listening
+
+They print messages to keep traces of what happened.
+
 To use the events, you can do something like:
 
-Simple Server:
+Both `StartServer` & `StartCluster` are configured the same way:
 
 ```javascript
 const WebuxServer = require("@studiowebux/server");
@@ -293,22 +302,11 @@ const options = require("config/server.js");
 const webuxServer = new WebuxServer(options, handler, console);
 
 webuxServer.StartServer();
+// webuxServer.StartCluster();
+
 webuxServer.server.on("connection", (req) => {
   console.log(req);
-});
-```
-
-With the cluster:
-
-```javascript
-const WebuxServer = require("@studiowebux/server");
-const handler = require("handler.js");
-const options = require("config/server.js");
-const webuxServer = new WebuxServer(options, handler, console);
-
-webuxServer.StartCluster();
-webuxServer.server.on("connection", (req) => {
-  console.log(req);
+  //
 });
 ```
 
