@@ -5,8 +5,6 @@
  * License: All rights reserved Studio Webux S.E.N.C 2015-Present
  */
 
-"use strict";
-
 /**
  * Print server information on the console.
  * @public
@@ -17,24 +15,24 @@
  */
 module.exports = (options, log = console) => {
   log.info(
-    `/****************************************************************/`
+    '/****************************************************************/',
   );
-  log.info(`/* Application started with success.`);
+  log.info('/* Application started with success.');
   log.info(`/* Version : ${options.version}`);
   log.info(`/* Author: ${options.author} | ${options.enterprise}`);
   log.info(
     `/* Project : ${options.project} is listening on port ${
-      process.env.PORT || "Unknown"
-    }`
+      process.env.PORT || 'Unknown'
+    }`,
   );
   log.info(`/* RESTFUL API accessible from : ${options.endpoint}`);
-  log.info(`/* Mode : ${process.env.NODE_ENV || "Unknown"}`);
+  log.info(`/* Mode : ${process.env.NODE_ENV || 'Unknown'}`);
   log.info(`/* Working Path : ${process.cwd()}`);
   log.info(`/* PID : ${process.pid}`);
   log.info(
-    `/* SSL Enabled : ${options.ssl && options.ssl.enabled ? "YES" : "NO"}`
+    `/* SSL Enabled : ${options.ssl && options.ssl.enabled ? 'YES' : 'NO'}`,
   );
   log.info(
-    `/****************************************************************/`
+    '/****************************************************************/',
   );
 };

@@ -1,11 +1,10 @@
+/* eslint-disable global-require */
 /**
  * File: Tools.js
  * Author: Tommy Gingras
  * Date: 2020-04-30
  * License: All rights reserved Studio Webux S.E.N.C 2015-Present
  */
-
-"use strict";
 
 /**
  * Normalize a port into a number, string, or false.
@@ -16,7 +15,7 @@ const normalizePort = (port) => {
   if (parseInt(port, 10) >= 0) {
     return parseInt(port, 10);
   }
-  throw new Error("Invalid port !");
+  throw new Error('Invalid port !');
 };
 
 /**
@@ -35,13 +34,10 @@ const UpdatePort = (port) => {
  * @param {Object} server The server instance
  * @param {Object} log The custom logger, by default, this is set to console
  */
-const onListening = (server, log = console) => {
-  return () => {
-    const addr = server.address();
-    const bind =
-      typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
-    log.info("webux-server - Listening on " + bind);
-  };
+const onListening = (server, log = console) => () => {
+  const addr = server.address();
+  const bind = typeof addr === 'string' ? `pipe ${addr}` : `port ${addr.port}`;
+  log.info(`webux-server - Listening on ${bind}`);
 };
 
 /**
@@ -50,18 +46,19 @@ const onListening = (server, log = console) => {
  * @throws {Error}
  */
 const onError = (error) => {
-  if (error.syscall !== "listen") {
+  if (error.syscall !== 'listen') {
     throw error;
   }
 
-  const bind = typeof port === "string" ? "Pipe " + port : "Port " + port;
+  // eslint-disable-next-line no-undef
+  const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
-    case "EACCES":
-      throw new Error(bind + " requires elevated privileges");
-    case "EADDRINUSE":
-      throw new Error(bind + " is already in use");
+    case 'EACCES':
+      throw new Error(`${bind} requires elevated privileges`);
+    case 'EADDRINUSE':
+      throw new Error(`${bind} is already in use`);
     default:
       throw error;
   }
@@ -72,10 +69,8 @@ const onError = (error) => {
  * @param {Object} log The custom logger, by default, this is set to console
  * @returns {VoidFunction}
  */
-const onClose = (log = console) => {
-  return () => {
-    log.info(`PID : ${process.pid} -> Server Closed`);
-  };
+const onClose = (log = console) => () => {
+  log.info(`PID : ${process.pid} -> Server Closed`);
 };
 
 /**
@@ -83,21 +78,17 @@ const onClose = (log = console) => {
  * @param {Number} cores The number of cores to use
  * @returns {Number} The cores parse in Integer
  */
-const setNumCores = (cores) => {
-  return parseInt(cores) || require("os").cpus().length;
-};
+const setNumCores = (cores) => parseInt(cores, 10) || require('os').cpus().length;
 
 /**
  * It converts the base64 key and cert to text
  * @param {Object} ssl the key and the cert in base64
  * @returns {Object} The key and cert
  */
-const parseSSL = (ssl) => {
-  return {
-    key: Buffer.from(ssl.key, "base64").toString("ascii"),
-    cert: Buffer.from(ssl.cert, "base64").toString("ascii"),
-  };
-};
+const parseSSL = (ssl) => ({
+  key: Buffer.from(ssl.key, 'base64').toString('ascii'),
+  cert: Buffer.from(ssl.cert, 'base64').toString('ascii'),
+});
 
 module.exports = {
   normalizePort,

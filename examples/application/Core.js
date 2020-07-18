@@ -1,19 +1,21 @@
-const WebuxServer = require("../../src/index");
-const express = require("express");
+/* eslint-disable global-require */
+const express = require('express');
+const WebuxServer = require('../../src/index');
+
 const app = express();
 
 function Core() {
   this.config = {
     ssl: {
-      enabled: process.env.KEY && process.env.CERT ? true : false,
-      key: process.env.KEY || "",
-      cert: process.env.CERT || "",
+      enabled: !!(process.env.KEY && process.env.CERT),
+      key: process.env.KEY || '',
+      cert: process.env.CERT || '',
     },
-    enterprise: "Studio Webux S.E.N.C",
-    author: "Tommy Gingras",
-    project: "@studiowebux/bin",
-    version: require("./package.json")["version"],
-    endpoint: "/api/v1",
+    enterprise: 'Studio Webux S.E.N.C',
+    author: 'Tommy Gingras',
+    project: '@studiowebux/bin',
+    version: require('./package.json').version,
+    endpoint: '/api/v1',
     port: process.env.PORT || 1337,
     cores: 4,
   };

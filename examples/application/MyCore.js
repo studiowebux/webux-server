@@ -1,7 +1,8 @@
-const core = require("./Core");
+const Core = require('./Core');
 
+// eslint-disable-next-line no-use-before-define
 module.exports = MyCore;
 
 function MyCore() {
-  return new core();
+  return new Core();
 }
