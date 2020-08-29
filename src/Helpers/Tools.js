@@ -50,8 +50,8 @@ const onError = (error) => {
     throw error;
   }
 
-  // eslint-disable-next-line no-undef
-  const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
+  // const bind = typeof port === 'string' ? `Pipe ${port}` : `Port ${port}`;
+  const bind = `Port ${process.env.PORT}`;
 
   // handle specific listen errors with friendly messages
   switch (error.code) {
